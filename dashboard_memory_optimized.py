@@ -282,6 +282,7 @@ try:
         raw, intel, latest_pred, prediction_date = load_dashboard_data()
 except Exception as exc:
     st.error(f"Dashboard data load failed: {exc}")
+    st.exception(exc)
     st.stop()
 
 k1, k2, k3, k4, k5 = st.columns(5)
