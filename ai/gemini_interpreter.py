@@ -82,6 +82,26 @@ STRICT GROUNDING RULES:
 14. Keep explanations concise, analytical, and understandable.
 
 15. When useful, quote supplied values to justify an interpretation.
+
+16. Never use the words "significant", "significantly",
+    "statistically significant", or similar statistical-significance
+    language. No statistical significance test is supplied in the
+    FACT PACKAGE.
+
+17. Keep numeric presentation reader-friendly without recalculating
+    supplied metrics. For model probabilities already represented as
+    probabilities, express them as whole percentages when describing
+    them in prose when that conversion is unambiguous. Do not expose
+    unnecessary decimal precision.
+
+18. Never expose internal Python field names in the response.
+    Translate fields into natural language, for example:
+    "engagement rate movement" rather than
+    "engagement_rate_movement".
+
+19. Prefer at most three important points per section. Avoid repeating
+    the same observation in the executive brief, What changed, and
+    What to watch sections.
 """
 
 
