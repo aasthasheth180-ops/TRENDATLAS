@@ -37,10 +37,8 @@ TrendAtlas turns repeated YouTube trending snapshots into historical trend intel
 ---
 
 ## Architecture
-(## Architecture
 
-
-![TrendAtlas Architecture](assets/Trendatlas architecture.png)
+![TrendAtlas Architecture](assets/trendatlas-architecture.png)
 
 
 
