@@ -8,10 +8,9 @@ Instead of treating the trending page as a static leaderboard, TrendAtlas collec
 
 It then uses machine learning to estimate whether a video will remain trending the next day and Gemini to generate explanations grounded only in computed evidence.
 
-### 🔗 Live Project
+## 🔗 Live Project
 
-**Live Dashboard:**  
-https://aasthasheth180-ops-youtube-s3-gemini-pip-dashboard-trend-mxq9ji.streamlit.app/
+**[Open the Live TrendAtlas Dashboard](https://aasthasheth180-ops-youtube-s3-gemini-pip-dashboard-trend-mxq9ji.streamlit.app/)**
 
 > **Note:** The live demo is hosted on Streamlit Community Cloud and may go to sleep after a period of inactivity. If the app is sleeping, click **“Yes, get this app back up!”** and allow a short time for it to restart.
 
@@ -38,7 +37,11 @@ TrendAtlas turns repeated YouTube trending snapshots into historical trend intel
 ---
 
 ## Architecture
-https://canva.link/ihlopyppobukqnh
+(## Architecture
+
+![TrendAtlas Architecture](<img width="1920" height="1080" alt="Trendatlas architecture diagram template" src="https://github.com/user-attachments/assets/3538af60-9e9f-4451-9ef8-0802a13f95f2" />
+)
+
 
 
 
