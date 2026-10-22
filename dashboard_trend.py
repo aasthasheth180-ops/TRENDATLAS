@@ -88,9 +88,22 @@ def load_pulse_data():
 
 @st.cache_data(ttl=1800, show_spinner=False)
 def load_ai_fact_package():
-    # Build the structured evidence only when chapter 07 requests it.
-    from ai.build_fact_package import build_fact_package
-    return build_fact_package()
+    import json
+    import boto3
+
+    s3 = boto3.client(
+        "s3",
+        region_name=os.getenv("AWS_DEFAULT_REGION", "us-east-1"),
+    )
+
+    response = s3.get_object(
+        Bucket=os.getenv("S3_BUCKET"),
+        Key="serving/trendatlas/ai_fact_package.json",
+    )
+
+    return json.loads(
+        response["Body"].read().decode("utf-8")
+    )
 
 @st.cache_data(ttl=1800, show_spinner=False)
 def load_pipeline_audit():
@@ -133,25 +146,52 @@ with st.sidebar:
         st.cache_data.clear()
         st.rerun()
 
-try:
-    with st.spinner("Loading trend intelligence…"):
-        raw, intel = load_pulse_data()
-        current, pulse_date = latest_complete_snapshot(intel["latest_video_state"])
-except Exception as exc:
-    st.error("Trend intelligence could not load the historical snapshots.")
-    with st.expander("Technical details"):
-        st.exception(exc)
-    st.stop()
+# AI Brief builds its own bounded fact package and does not need the
+# full dashboard history to be loaded first.
+if chapter != "07 · AI Brief":
+    try:
+        with st.spinner("Loading trend intelligence…"):
+            raw, intel = load_pulse_data()
+            current, pulse_date = latest_complete_snapshot(
+                intel["latest_video_state"]
+            )
+    except Exception as exc:
+        st.error("Trend intelligence could not load the historical snapshots.")
+        with st.expander("Technical details"):
+            st.exception(exc)
+        st.stop()
 
 head_l, head_r = st.columns([5, 1])
+
 with head_l:
-    st.markdown('<div class="eyebrow">YouTube Trend Intelligence</div>', unsafe_allow_html=True)
-    st.markdown('<div class="subtle">How attention rises, travels and survives.</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="eyebrow">YouTube Trend Intelligence</div>',
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<div class="subtle">How attention rises, travels and survives.</div>',
+        unsafe_allow_html=True,
+    )
+
 with head_r:
-    st.caption(f"● Latest complete view · {current['region_code'].nunique()}/4 regions")
+    if chapter == "07 · AI Brief":
+        st.caption("● Grounded AI brief")
+    else:
+        st.caption(
+            f"● Latest complete view · "
+            f"{current['region_code'].nunique()}/4 regions"
+        )
+
 st.divider()
 
-categories = sorted(current["category_name"].dropna().astype(str).unique().tolist())
+if chapter != "07 · AI Brief":
+    categories = sorted(
+        current["category_name"]
+        .dropna()
+        .astype(str)
+        .unique()
+        .tolist()
+    )
 
 if chapter == "01 · Pulse":
     st.markdown('<div class="gold-kicker">01 · PULSE</div>', unsafe_allow_html=True)
@@ -3305,7 +3345,7 @@ elif chapter == "08 · Data Health":
         st.caption(f"{len(display):,} video-market lifecycles match these filters.")
         st.dataframe(
             display.sort_values(
-                ["Observed lifetime (days)", "Entry rank"],
+                ["Observed lifetime", "Entry rank"],
                 ascending=[False, True],
             ).head(500),
             hide_index=True,
