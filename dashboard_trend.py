@@ -17,7 +17,7 @@ import plotly.express as px
 from ai.build_fact_package import load_raw_history
 from analytics.historical_intelligence import prepare_historical_intelligence
 
-st.set_page_config(page_title="YouTube Trend Intelligence", page_icon="â–¶", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="YouTube Trend Intelligence", page_icon="▶", layout="wide", initial_sidebar_state="collapsed")
 
 GOLD, GOLD_SOFT = "#D6AE5D", "#E7C77D"
 BG, PANEL, BORDER, MUTED, TEXT = "#090A0C", "#101114", "#26282D", "#8B8E98", "#F4F1E8"
@@ -66,11 +66,11 @@ def safe_text(value, fallback="Unknown"):
     return str(value)
 
 def fmt_int(value):
-    if value is None or pd.isna(value): return "â€”"
+    if value is None or pd.isna(value): return "—"
     return f"{int(value):,}"
 
 def fmt_compact(value):
-    if value is None or pd.isna(value): return "â€”"
+    if value is None or pd.isna(value): return "—"
     value = float(value)
     if abs(value) >= 1_000_000: return f"{value/1_000_000:.1f}M"
     if abs(value) >= 1_000: return f"{value/1_000:.1f}K"
@@ -245,8 +245,8 @@ with st.sidebar:
     st.markdown("### Trend Intelligence")
     st.caption("Story chapters")
     if "chapter" not in st.session_state:
-        st.session_state.chapter = "01 Â· Pulse"
-    for item in ["01 Â· Pulse", "02 Â· Momentum", "03 Â· Lifecycle", "04 Â· Content", "05 Â· Regions", "06 Â· Prediction", "07 Â· AI Brief", "08 Â· Data Health"]:
+        st.session_state.chapter = "01 · Pulse"
+    for item in ["01 · Pulse", "02 · Momentum", "03 · Lifecycle", "04 · Content", "05 · Regions", "06 · Prediction", "07 · AI Brief", "08 · Data Health"]:
         if st.button(item, use_container_width=True,
                      type="primary" if st.session_state.chapter == item else "secondary",
                      key=f"nav_{item}"):
@@ -264,20 +264,20 @@ with st.sidebar:
 # Historical chapters still load the full archive until their
 # serving datasets are migrated.
 try:
-    if chapter in ["01 Â· Pulse", "02 Â· Momentum"]:
-        with st.spinner("Loading latest trend stateâ€¦"):
+    if chapter in ["01 · Pulse", "02 · Momentum"]:
+        with st.spinner("Loading latest trend state…"):
             latest_state = load_latest_video_state()
             current, pulse_date = latest_complete_snapshot(latest_state)
 
-    elif chapter == "03 Â· Lifecycle":
-        with st.spinner("Loading lifecycle intelligenceâ€¦"):
+    elif chapter == "03 · Lifecycle":
+        with st.spinner("Loading lifecycle intelligence…"):
             lifecycle_history = load_lifecycle_history()
             latest_state = load_latest_video_state()
             current, pulse_date = latest_complete_snapshot(latest_state)
 
 
-    elif chapter in ["04 Â· Content","05 Â· Regions",]:
-                with st.spinner("Loading content and regional intelligenceâ€¦"):
+    elif chapter in ["04 · Content","05 · Regions",]:
+                with st.spinner("Loading content and regional intelligence…"):
                     content_regions_history = load_content_regions_history()
                     latest_state = load_latest_video_state()
 
@@ -285,8 +285,8 @@ try:
                         latest_state
                     )
 
-    elif chapter == "08 Â· Data Health":
-            with st.spinner("Loading data-health intelligenceâ€¦"):
+    elif chapter == "08 · Data Health":
+            with st.spinner("Loading data-health intelligence…"):
                 data_health = load_data_health_artifact()
                 latest_state = load_latest_video_state()
 
@@ -313,19 +313,19 @@ with head_l:
     )
 
 with head_r:
-    if chapter == "07 Â· AI Brief":
-        st.caption("â— Grounded AI brief")
-    elif chapter == "06 Â· Prediction":
-        st.caption("â— Persistence forecast")
+    if chapter == "07 · AI Brief":
+        st.caption("● Grounded AI brief")
+    elif chapter == "06 · Prediction":
+        st.caption("● Persistence forecast")
     else:
         st.caption(
-            f"â— Latest complete view Â· "
+            f"● Latest complete view · "
             f"{current['region_code'].nunique()}/4 regions"
         )
 
 st.divider()
 
-if chapter not in ["06 Â· Prediction", "07 Â· AI Brief"]:
+if chapter not in ["06 · Prediction", "07 · AI Brief"]:
     categories = sorted(
         current["category_name"]
         .dropna()
@@ -333,8 +333,8 @@ if chapter not in ["06 Â· Prediction", "07 Â· AI Brief"]:
         .unique()
         .tolist()
     )
-if chapter == "01 Â· Pulse":
-    st.markdown('<div class="gold-kicker">01 Â· PULSE</div>', unsafe_allow_html=True)
+if chapter == "01 · Pulse":
+    st.markdown('<div class="gold-kicker">01 · PULSE</div>', unsafe_allow_html=True)
     st.markdown('<div class="hero-title">What is capturing attention right now?</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="subtle">Latest complete snapshot: {pd.to_datetime(pulse_date).date()} across CA, GB, IN and US.</div>', unsafe_allow_html=True)
 
@@ -366,7 +366,7 @@ if chapter == "01 Â· Pulse":
     st.markdown(f'''<div class="signal"><div class="eyebrow">Today's signal</div><div style="font-size:1.35rem;margin-top:.45rem;line-height:1.45"><b>{len(rising):,}</b> video-region states are rising. <b>{top_name}</b> made the largest move, gaining <b>{move}</b> positions, while <b>{lead_category}</b> leads the current mix.</div></div>''', unsafe_allow_html=True)
 
     st.markdown("### Trending now")
-    st.caption("Rank Â· movement Â· view velocity Â· region")
+    st.caption("Rank · movement · view velocity · region")
     leaderboard = view.copy()
     leaderboard["trending_rank"] = pd.to_numeric(leaderboard["trending_rank"], errors="coerce")
     leaderboard = leaderboard.sort_values(["trending_rank", "view_velocity"], ascending=[True, False]).head(10)
@@ -374,22 +374,22 @@ if chapter == "01 Â· Pulse":
         c_rank, c_thumb, c_title, c_signal = st.columns([.45, 1.2, 5, 1.7], vertical_alignment="center")
         with c_rank:
             rank = row.get("trending_rank")
-            st.markdown(f'<div class="rank-number">#{int(rank) if pd.notna(rank) else "â€”"}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="rank-number">#{int(rank) if pd.notna(rank) else "—"}</div>', unsafe_allow_html=True)
         with c_thumb:
             thumb = youtube_thumbnail(safe_text(row.get("id"), ""))
             if thumb:
                 st.image(thumb, use_container_width=True)
         with c_title:
             st.markdown(f'<div class="video-title">{safe_text(row.get("video_title"), "Untitled video")}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="video-meta">{safe_text(row.get("channel_name"))} Â· {safe_text(row.get("category_name"))} Â· {safe_text(row.get("region_code"), "â€”")}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="video-meta">{safe_text(row.get("channel_name"))} · {safe_text(row.get("category_name"))} · {safe_text(row.get("region_code"), "—")}</div>', unsafe_allow_html=True)
         with c_signal:
             movement = row.get("rank_movement")
             if pd.notna(movement) and movement > 0:
-                move_html = f'<span class="rise">â–² {int(movement)}</span>'
+                move_html = f'<span class="rise">▲ {int(movement)}</span>'
             elif pd.notna(movement) and movement < 0:
-                move_html = f'<span class="fall">â–¼ {abs(int(movement))}</span>'
+                move_html = f'<span class="fall">▼ {abs(int(movement))}</span>'
             else:
-                move_html = '<span class="neutral">â†’ 0</span>'
+                move_html = '<span class="neutral">→ 0</span>'
             st.markdown(move_html, unsafe_allow_html=True)
             st.caption(f"{fmt_compact(row.get('view_velocity'))} views/hr")
         st.divider()
@@ -412,21 +412,21 @@ if chapter == "01 Â· Pulse":
         st.plotly_chart(fig, use_container_width=True)
 
     rising_share = 100 * len(rising) / len(view) if len(view) else 0
-    st.markdown(f'''<div class="so-what"><div class="gold-kicker">SO WHAT</div><div style="font-size:1.12rem;margin-top:.5rem">{lead_category} currently has the largest share of collected trending states, and {rising_share:.0f}% of this view is moving upward. The next question is not who is visible â€” it is <b>who is accelerating fastest.</b></div><div style="color:{GOLD_SOFT};margin-top:.9rem;font-weight:600">Continue â†’ 02 Â· Momentum</div></div>''', unsafe_allow_html=True)
+    st.markdown(f'''<div class="so-what"><div class="gold-kicker">SO WHAT</div><div style="font-size:1.12rem;margin-top:.5rem">{lead_category} currently has the largest share of collected trending states, and {rising_share:.0f}% of this view is moving upward. The next question is not who is visible — it is <b>who is accelerating fastest.</b></div><div style="color:{GOLD_SOFT};margin-top:.9rem;font-weight:600">Continue → 02 · Momentum</div></div>''', unsafe_allow_html=True)
 
     with st.expander("How this is calculated"):
         st.markdown("""
 **Pulse** uses the latest available date with all four expected regions (CA, GB, IN and US) when one exists.
 
 - **Live video-region states** counts rows in that snapshot after the category lens is applied.
-- **Rising** means `rank_movement > 0` â€” the video improved its trending position relative to its previous observation.
+- **Rising** means `rank_movement > 0` — the video improved its trending position relative to its previous observation.
 - **New today** uses `trending_observations <= 1` as the current entry proxy.
 - **View velocity** is snapshot-based growth per hour; it measures growth observed while the video is in our collected trending history, not the video's full lifetime.
 """)
 
-elif chapter == "02 Â· Momentum":
-    st.markdown('<div class="gold-kicker">02 Â· MOMENTUM</div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-title">Which videos are accelerating â€” and how fast?</div>', unsafe_allow_html=True)
+elif chapter == "02 · Momentum":
+    st.markdown('<div class="gold-kicker">02 · MOMENTUM</div>', unsafe_allow_html=True)
+    st.markdown('<div class="hero-title">Which videos are accelerating — and how fast?</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtle">Rank tells us where a video is. Momentum tells us where attention is moving.</div>', unsafe_allow_html=True)
 
     category = st.selectbox("Category lens", ["All"] + categories, key="momentum_category", help="Filter every Momentum metric and chart to one content category.")
@@ -449,9 +449,9 @@ elif chapter == "02 Â· Momentum":
 
     metric_specs = [
         ("Rising states", fmt_int(len(rising)), False),
-        ("Fastest climb", f"â–² {fastest}" if fastest else "â€”", fastest > 0),
-        ("Median move", (f"â–² {median_move:.0f}" if median_move > 0 else f"â–¼ {abs(median_move):.0f}" if median_move < 0 else "â†’ 0") if pd.notna(median_move) else "â€”", median_move > 0 if pd.notna(median_move) else False),
-        ("Velocity leader", f"{fmt_compact(velocity_leader)}/hr" if pd.notna(velocity_leader) else "â€”", False),
+        ("Fastest climb", f"▲ {fastest}" if fastest else "—", fastest > 0),
+        ("Median move", (f"▲ {median_move:.0f}" if median_move > 0 else f"▼ {abs(median_move):.0f}" if median_move < 0 else "→ 0") if pd.notna(median_move) else "—", median_move > 0 if pd.notna(median_move) else False),
+        ("Velocity leader", f"{fmt_compact(velocity_leader)}/hr" if pd.notna(velocity_leader) else "—", False),
     ]
     for col, (label, value, positive) in zip(st.columns(4), metric_specs):
         with col:
@@ -474,7 +474,7 @@ elif chapter == "02 Â· Momentum":
     st.markdown(f'''<div class="signal"><div class="eyebrow">Momentum insight</div><div style="font-size:1.35rem;margin-top:.45rem;line-height:1.45"><b>{top_title}</b> made the fastest climb, gaining <b>{top_move}</b> positions. {relation}</div></div>''', unsafe_allow_html=True)
 
     st.markdown("### The biggest climbers changed the board quickly")
-    st.caption("Previous observed rank â†’ latest rank in the same region. Larger upward jumps mean stronger rank momentum.")
+    st.caption("Previous observed rank → latest rank in the same region. Larger upward jumps mean stronger rank momentum.")
     hero = m.dropna(subset=["previous_rank", "trending_rank", "rank_movement"]).sort_values(["rank_movement", "view_velocity"], ascending=[False, False]).head(6).copy()
     if hero.empty:
         st.info("Not enough prior-rank observations are available for the rank-change view.")
@@ -482,18 +482,18 @@ elif chapter == "02 Â· Momentum":
         for _, row in hero.iterrows():
             a,thumb_col,b,c,d = st.columns([1.25,1.35,4.2,.85,1.35], vertical_alignment="center")
             with a:
-                st.markdown(f'<div class="rank-number">#{int(row["previous_rank"])} â†’ #{int(row["trending_rank"])}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="rank-number">#{int(row["previous_rank"])} → #{int(row["trending_rank"])}</div>', unsafe_allow_html=True)
             with thumb_col:
                 thumb = youtube_thumbnail(safe_text(row.get("id"), ""))
                 if thumb:
                     st.image(thumb, use_container_width=True)
             with b:
                 st.markdown(f'<div class="video-title">{safe_text(row.get("video_title"), "Untitled video")}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="video-meta">{safe_text(row.get("channel_name"))} Â· {safe_text(row.get("category_name"))} Â· {safe_text(row.get("region_code"), "â€”")}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="video-meta">{safe_text(row.get("channel_name"))} · {safe_text(row.get("category_name"))} · {safe_text(row.get("region_code"), "—")}</div>', unsafe_allow_html=True)
             with c:
                 mv=row["rank_movement"]
                 css="rise" if mv>0 else "fall" if mv<0 else "neutral"
-                arrow="â–²" if mv>0 else "â–¼" if mv<0 else "â†’"
+                arrow="▲" if mv>0 else "▼" if mv<0 else "→"
                 st.markdown(f'<span class="{css}">{arrow} {abs(int(mv))}</span>', unsafe_allow_html=True)
             with d:
                 vv=row.get("view_velocity")
@@ -521,7 +521,7 @@ elif chapter == "02 Â· Momentum":
             risers = movers.nlargest(3, "rank_movement")
             fallers = movers.nsmallest(2, "rank_movement")
             movers5 = pd.concat([risers, fallers]).drop_duplicates(subset=["id", "region_code"]).copy()
-            movers5["label"] = movers5["video_title"].fillna("Untitled").astype(str).apply(lambda x: x if len(x) <= 36 else x[:33] + "â€¦")
+            movers5["label"] = movers5["video_title"].fillna("Untitled").astype(str).apply(lambda x: x if len(x) <= 36 else x[:33] + "…")
             movers5 = movers5.sort_values("rank_movement")
             colors = ["#E06C75" if x < 0 else "#54C98A" for x in movers5["rank_movement"]]
             fig = px.bar(movers5, x="rank_movement", y="label", orientation="h", title="Biggest rank movers")
@@ -542,7 +542,7 @@ elif chapter == "02 Â· Momentum":
         corr_text = f"View velocity and rank movement move together to some extent in this snapshot (correlation {corr:.2f}), but the scatter still shows exceptions."
     else:
         corr_text = f"View velocity and rank movement move in opposite directions overall in this snapshot (correlation {corr:.2f}), showing that velocity alone does not explain trending position."
-    st.markdown(f'''<div class="so-what"><div class="gold-kicker">SO WHAT</div><div style="font-size:1.12rem;margin-top:.5rem">{corr_text} The next question is whether that momentum <b>survives over time.</b></div><div style="color:{GOLD_SOFT};margin-top:.9rem;font-weight:600">Continue â†’ 03 Â· Lifecycle</div></div>''', unsafe_allow_html=True)
+    st.markdown(f'''<div class="so-what"><div class="gold-kicker">SO WHAT</div><div style="font-size:1.12rem;margin-top:.5rem">{corr_text} The next question is whether that momentum <b>survives over time.</b></div><div style="color:{GOLD_SOFT};margin-top:.9rem;font-weight:600">Continue → 03 · Lifecycle</div></div>''', unsafe_allow_html=True)
 
     with st.expander("How this is calculated"):
         st.markdown("""
@@ -557,7 +557,7 @@ elif chapter == "02 Â· Momentum":
 """)
 
 
-elif chapter == "03 Â· Lifecycle":
+elif chapter == "03 · Lifecycle":
     h = lifecycle_history.copy()
 
     h["fetch_date"] = pd.to_datetime(
@@ -573,7 +573,7 @@ elif chapter == "03 Â· Lifecycle":
     # =========================================================
 
     st.markdown(
-        '<div class="gold-kicker">03 Â· LIFECYCLE</div>',
+        '<div class="gold-kicker">03 · LIFECYCLE</div>',
         unsafe_allow_html=True
     )
 
@@ -634,7 +634,7 @@ elif chapter == "03 Â· Lifecycle":
             x["category_name"].astype(str) == category
         ]
 
-    # Keep one observation for each video Ã— region Ã— day.
+    # Keep one observation for each video × region × day.
     d = (
         x.sort_values("fetch_timestamp")
         .drop_duplicates(
@@ -736,7 +736,7 @@ elif chapter == "03 Â· Lifecycle":
         )
         if category != "All categories":
             st.caption(
-                "â“˜ Category labels come directly from YouTube's "
+                "ⓘ Category labels come directly from YouTube's "
                 "video metadata and are not inferred from video titles. "
                 "A video's category may therefore appear different from "
                 "what its title or subject might suggest."
@@ -819,7 +819,7 @@ elif chapter == "03 Â· Lifecycle":
         )
 
         # =====================================================
-        # GRAPH 1 â€” WEEKLY COHORT SURVIVAL
+        # GRAPH 1 — WEEKLY COHORT SURVIVAL
         # =====================================================
 
         st.markdown(
@@ -1045,8 +1045,8 @@ elif chapter == "03 Â· Lifecycle":
                         views_text = "N/A"
 
                     examples.append(
-                        f"{title} Â· {ex_region} Â· "
-                        f"Rank {rank_text} Â· "
+                        f"{title} · {ex_region} · "
+                        f"Rank {rank_text} · "
                         f"{views_text} views"
                     )
 
@@ -1153,13 +1153,13 @@ elif chapter == "03 Â· Lifecycle":
         left, right = st.columns(2)
 
         # =====================================================
-        # GRAPH 2 â€” LIFETIME DISTRIBUTION
+        # GRAPH 2 — LIFETIME DISTRIBUTION
         # =====================================================
 
         with left:
 
             st.markdown(
-                "### Most trending lifecycles last only 1â€“2 days"
+                "### Most trending lifecycles last only 1–2 days"
             )
 
             st.caption(
@@ -1232,7 +1232,7 @@ elif chapter == "03 Â· Lifecycle":
                     )
 
                     examples.append(
-                        f"{title} Â· {ex_region}"
+                        f"{title} · {ex_region}"
                     )
 
                 example_text = (
@@ -1319,7 +1319,7 @@ elif chapter == "03 Â· Lifecycle":
             )
 
         # =====================================================
-        # GRAPH 3 â€” ENTRY RANK VS LIFETIME
+        # GRAPH 3 — ENTRY RANK VS LIFETIME
         # =====================================================
 
         with right:
@@ -1344,8 +1344,8 @@ elif chapter == "03 Â· Lifecycle":
                 bins=[0, 10, 50, 100],
                 labels=[
                     "Top 10",
-                    "Rank 11â€“50",
-                    "Rank 51â€“100"
+                    "Rank 11–50",
+                    "Rank 51–100"
                 ]
             )
 
@@ -1409,13 +1409,13 @@ elif chapter == "03 Â· Lifecycle":
 
                     if n > 0:
                         st.markdown(
-                            f"**{row['entry_band']}** â€” "
+                            f"**{row['entry_band']}** — "
                             f"{row['median_days']:.1f} median "
-                            f"observed days Â· n={n:,}"
+                            f"observed days · n={n:,}"
                         )
                     else:
                         st.markdown(
-                            f"**{row['entry_band']}** â€” "
+                            f"**{row['entry_band']}** — "
                             "No observations"
                         )
 
@@ -1426,8 +1426,8 @@ elif chapter == "03 Â· Lifecycle":
 
                 for band in [
                     "Top 10",
-                    "Rank 11â€“50",
-                    "Rank 51â€“100"
+                    "Rank 11–50",
+                    "Rank 51–100"
                 ]:
 
                     bucket = ranked_life[
@@ -1487,8 +1487,8 @@ elif chapter == "03 Â· Lifecycle":
                         )
 
                         examples.append(
-                            f"{title} Â· {ex_region} Â· "
-                            f"entered {rank_text} Â· "
+                            f"{title} · {ex_region} · "
+                            f"entered {rank_text} · "
                             f"{days} day"
                             f"{'' if days == 1 else 's'}"
                         )
@@ -1517,8 +1517,8 @@ elif chapter == "03 Â· Lifecycle":
                     ],
                     category_orders={
                         "entry_band": [
-                            "Rank 51â€“100",
-                            "Rank 11â€“50",
+                            "Rank 51–100",
+                            "Rank 11–50",
                             "Top 10"
                         ]
                     }
@@ -1579,12 +1579,12 @@ elif chapter == "03 Â· Lifecycle":
     <div class="gold-kicker">SO WHAT</div>
     <div style="font-size:1.12rem; margin-top:.5rem;">
     Trending attention decays quickly after entry, with most observed
-    video-region lifecycles lasting only 1â€“2 days. In this dataset,
+    video-region lifecycles lasting only 1–2 days. In this dataset,
     higher-ranked entries also show longer median observed lifetimes.
     The next question is <b>what kind of content keeps winning?</b>
     </div>
     <div style="color:{GOLD_SOFT}; margin-top:.9rem; font-weight:600;">
-    Continue â†’ 04 Â· Content
+    Continue → 04 · Content
     </div>
     </div>
     """,
@@ -1601,7 +1601,7 @@ elif chapter == "03 Â· Lifecycle":
         ):
             st.markdown(
                 """
-**Lifecycle unit:** one video Ã— region.
+**Lifecycle unit:** one video × region.
 
 - **Entry** is the first calendar day a video-region state appears in the collected trending history.
 - **Observed life** counts the distinct calendar days on which that video-region state was actually observed. Missing calendar days are not automatically treated as trending days.
@@ -1619,12 +1619,12 @@ All lifecycle measurements describe the project's collected observation window a
             )
 
 
-elif chapter == "04 Â· Content":
+elif chapter == "04 · Content":
     h = content_regions_history.copy()
     # ---------------------------------------------------------
-    # 04 Â· CONTENT
+    # 04 · CONTENT
     # Question:
-    # What kind of content wins â€” and keeps winning?
+    # What kind of content wins — and keeps winning?
     # ---------------------------------------------------------
     h["fetch_date"] = pd.to_datetime(
         h["fetch_date"], errors="coerce"
@@ -1633,11 +1633,11 @@ elif chapter == "04 Â· Content":
     h = h.dropna(subset=["fetch_date", "category_name"])
 
     st.markdown(
-        '<div class="gold-kicker">04 Â· CONTENT</div>',
+        '<div class="gold-kicker">04 · CONTENT</div>',
         unsafe_allow_html=True
     )
     st.markdown(
-        '<div class="hero-title">What kind of content wins â€” and keeps winning?</div>',
+        '<div class="hero-title">What kind of content wins — and keeps winning?</div>',
         unsafe_allow_html=True
     )
     st.markdown(
@@ -1727,7 +1727,7 @@ elif chapter == "04 Â· Content":
     velocity_leader = (
         str(velocity_perf.iloc[0]["category_name"])
         if not velocity_perf.empty
-        else "â€”"
+        else "—"
     )
 
     velocity_leader_value = (
@@ -1791,7 +1791,7 @@ elif chapter == "04 Â· Content":
     velocity_value_text = (
         f"{velocity_leader}"
         if velocity_leader_value is not None
-        else "â€”"
+        else "—"
     )
 
     kpis = [
@@ -2085,7 +2085,7 @@ elif chapter == "04 Â· Content":
                 {so_what_text}
             </div>
             <div style="color:{GOLD_SOFT};margin-top:.9rem;font-weight:600">
-                Continue â†’ 05 Â· Regions
+                Continue → 05 · Regions
             </div>
         </div>
         ''',
@@ -2108,7 +2108,7 @@ excluded from category rankings, category-share charts and category
 performance comparisons because they do not identify a usable content
 category.
 
-**Category share.** â€œShare of trendingâ€ means a category's share of the
+**Category share.** “Share of trending” means a category's share of the
 categorized trending observations collected by this pipeline under the
 selected region lens. It does **not** represent the category's share of all
 videos or all viewing activity on YouTube.
@@ -2141,7 +2141,7 @@ measurement of the entire YouTube platform.
         )
 
 
-elif chapter == "05 Â· Regions":
+elif chapter == "05 · Regions":
     h = content_regions_history.copy()
     h["fetch_date"] = pd.to_datetime(
         h["fetch_date"], errors="coerce"
@@ -2150,7 +2150,7 @@ elif chapter == "05 Â· Regions":
     h = h.dropna(subset=["fetch_date", "region_code", "id"])
 
     st.markdown(
-        '<div class="gold-kicker">05 Â· REGIONS</div>',
+        '<div class="gold-kicker">05 · REGIONS</div>',
         unsafe_allow_html=True,
     )
     st.markdown(
@@ -2362,7 +2362,7 @@ elif chapter == "05 Â· Regions":
     most_distinct = (
         max(distinct, key=distinct.get)
         if distinct
-        else "â€”"
+        else "—"
     )
 
     # ---------------------------------------------------------
@@ -2371,19 +2371,19 @@ elif chapter == "05 Â· Regions":
     cross_display = (
         f"{cross_share:.0%}"
         if pd.notna(cross_share)
-        else "â€”"
+        else "—"
     )
 
     all4_display = (
         f"{all4:.0%}"
         if pd.notna(all4)
-        else "â€”"
+        else "—"
     )
 
     lift_display = (
-    f"{lift:.1f}Ã—"
+    f"{lift:.1f}×"
     if pd.notna(lift)
-    else "â€”"
+    else "—"
     )
 
     kpis = [
@@ -2443,7 +2443,7 @@ elif chapter == "05 Â· Regions":
         if pd.notna(lift):
             signal_text += (
                 f" Cross-region videos show "
-                f"<b>{lift:.1f}Ã—</b> the median observed view velocity "
+                f"<b>{lift:.1f}×</b> the median observed view velocity "
                 f"of local-only videos."
             )
     else:
@@ -2763,7 +2763,7 @@ elif chapter == "05 Â· Regions":
             f"Most trending videos remain geographically concentrated: "
             f"<b>{cross_share:.0%}</b> appear in at least two collected "
             f"markets. But videos that do cross markets show "
-            f"<b>{lift:.1f}Ã—</b> the median observed view velocity of "
+            f"<b>{lift:.1f}×</b> the median observed view velocity of "
             f"local-only videos. The next question is: "
             f"<b>can we predict whether that attention survives tomorrow?</b>"
         )
@@ -2802,7 +2802,7 @@ elif chapter == "05 Â· Regions":
                 margin-top:.9rem;
                 font-weight:600
             ">
-                Continue â†’ 06 Â· Prediction
+                Continue → 06 · Prediction
             </div>
         </div>
         """,
@@ -2818,13 +2818,13 @@ elif chapter == "05 Â· Regions":
 **Geographic reach.** A unique video is **local-only** when it appears
 in exactly one of the four collected markets (CA, GB, IN or US) during
 the selected time window. A **cross-region** video appears in at least
-two collected markets. â€œAll 4 marketsâ€ means the same video was
+two collected markets. “All 4 markets” means the same video was
 observed trending in CA, GB, IN and US during that window.
 
 **Market content share.** Heatmap percentages use each market's full
 categorized trending observations as the denominator. For example, if
 Music is selected, the Music value for CA is Music observations in CA
-divided by all categorized trending observations in CA â€” selecting
+divided by all categorized trending observations in CA — selecting
 Music does not redefine Music as 100% of the market.
 
 **Most locally distinct mix.** Each market's full category-share
@@ -2845,8 +2845,8 @@ activity worldwide.
             """
         )
 
-elif chapter == "06 Â· Prediction":
-    st.markdown('<div class="gold-kicker">06 Â· PREDICTION</div>', unsafe_allow_html=True)
+elif chapter == "06 · Prediction":
+    st.markdown('<div class="gold-kicker">06 · PREDICTION</div>', unsafe_allow_html=True)
     st.markdown('<div class="hero-title">Can we predict whether attention survives tomorrow?</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtle">A leakage-safe Random Forest estimates whether each video-region state will still be trending in the same market on the next calendar day.</div>', unsafe_allow_html=True)
 
@@ -2855,7 +2855,7 @@ elif chapter == "06 Â· Prediction":
         with col:
             st.markdown(f'<div class="metric-card"><div class="metric-label">{label}</div><div class="metric-value">{value:.3f}</div></div>', unsafe_allow_html=True)
 
-    st.markdown('<div class="signal"><div class="eyebrow">MODEL OUTLOOK</div><div style="font-size:1.35rem;margin-top:.45rem;line-height:1.45">The Random Forest reached <b>0.871 ROC-AUC</b> on a future held-out period, outperforming logistic regression and the majority baseline. The model predicts persistence â€” it does not explain why a video remains trending.</div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="signal"><div class="eyebrow">MODEL OUTLOOK</div><div style="font-size:1.35rem;margin-top:.45rem;line-height:1.45">The Random Forest reached <b>0.871 ROC-AUC</b> on a future held-out period, outperforming logistic regression and the majority baseline. The model predicts persistence — it does not explain why a video remains trending.</div></div>', unsafe_allow_html=True)
 
     left, right = st.columns([1.05, .95])
     with left:
@@ -2889,7 +2889,7 @@ elif chapter == "06 Â· Prediction":
     st.caption("Latest model-scored video-market states. Probability is the saved Random Forest estimate that the same video remains trending in the same market on the next calendar day.")
 
     try:
-        with st.spinner("Loading the latest persistence predictionsâ€¦"):
+        with st.spinner("Loading the latest persistence predictions…"):
             scored, prediction_date = load_current_predictions()
 
         prob_col = "still_trending_tomorrow_probability"
@@ -2917,14 +2917,14 @@ elif chapter == "06 Â· Prediction":
                     c_rank, c_thumb, c_title, c_prob = st.columns([.55, 1.2, 5.2, 1.55], vertical_alignment="center")
                     with c_rank:
                         rank = row.get("trending_rank")
-                        st.markdown(f'<div class="rank-number">#{int(rank) if pd.notna(rank) else "â€”"}</div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="rank-number">#{int(rank) if pd.notna(rank) else "—"}</div>', unsafe_allow_html=True)
                     with c_thumb:
                         thumb = youtube_thumbnail(safe_text(row.get("id"), ""))
                         if thumb:
                             st.image(thumb, use_container_width=True)
                     with c_title:
                         st.markdown(f'<div class="video-title">{safe_text(row.get("video_title"), "Untitled video")}</div>', unsafe_allow_html=True)
-                        st.markdown(f'<div class="video-meta">{safe_text(row.get("channel_name"))} Â· {safe_text(row.get("category_name"))} Â· {safe_text(row.get("region_code"), "â€”")}</div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="video-meta">{safe_text(row.get("channel_name"))} · {safe_text(row.get("category_name"))} · {safe_text(row.get("region_code"), "—")}</div>', unsafe_allow_html=True)
                     with c_prob:
                         probability = float(row[prob_col])
                         st.markdown(f'<span class="{probability_class}">{probability:.0%}</span>', unsafe_allow_html=True)
@@ -2937,7 +2937,7 @@ elif chapter == "06 Â· Prediction":
             render_prediction_watch(high_watch, "rise")
 
             st.markdown("#### Lowest persistence signals")
-            st.caption("The four latest video-market states with the lowest estimated probability of remaining trending tomorrow â€” the model's strongest disappearance-risk signals.")
+            st.caption("The four latest video-market states with the lowest estimated probability of remaining trending tomorrow — the model's strongest disappearance-risk signals.")
             low_watch = scored_ok.tail(4).sort_values([prob_col, "trending_rank"], ascending=[True, True])
             render_prediction_watch(low_watch, "fall")
     except Exception as exc:
@@ -2945,7 +2945,7 @@ elif chapter == "06 Â· Prediction":
         with st.expander("Prediction technical details"):
             st.exception(exc)
 
-    st.markdown(f"""<div class="so-what"><div class="gold-kicker">SO WHAT</div><div style="font-size:1.12rem;margin-top:.5rem;line-height:1.55">The model can rank current video-market states by their estimated chance of surviving into tomorrow, while the held-out test shows that this signal generalizes better than simpler baselines over the observed test period. The next step is to combine the project's calculated evidence into a <b>grounded executive brief.</b></div><div style="color:{GOLD_SOFT};margin-top:.9rem;font-weight:600">Continue â†’ 07 Â· AI Brief</div></div>""", unsafe_allow_html=True)
+    st.markdown(f"""<div class="so-what"><div class="gold-kicker">SO WHAT</div><div style="font-size:1.12rem;margin-top:.5rem;line-height:1.55">The model can rank current video-market states by their estimated chance of surviving into tomorrow, while the held-out test shows that this signal generalizes better than simpler baselines over the observed test period. The next step is to combine the project's calculated evidence into a <b>grounded executive brief.</b></div><div style="color:{GOLD_SOFT};margin-top:.9rem;font-weight:600">Continue → 07 · AI Brief</div></div>""", unsafe_allow_html=True)
 
     with st.expander("How this is calculated"):
         st.markdown("""
@@ -2953,7 +2953,7 @@ elif chapter == "06 Â· Prediction":
 
 **Prediction timing.** Features are constructed from information available at or before the current end-of-day video-region state. Final lifecycle outcomes such as `last_seen` or completed lifetime are not model inputs.
 
-**Temporal validation.** The verified Phase 8 run trained on older observations (Sep 1â€“29), purged Sep 30 because its next-day target touches the test period, and evaluated on the future Oct 1â€“7 period. Random Forest held-out performance was ROC-AUC 0.871, F1 0.743, precision 0.794 and recall 0.697. Logistic regression ROC-AUC was 0.812; the majority baseline was 0.500.
+**Temporal validation.** The verified Phase 8 run trained on older observations (Sep 1–29), purged Sep 30 because its next-day target touches the test period, and evaluated on the future Oct 1–7 period. Random Forest held-out performance was ROC-AUC 0.871, F1 0.743, precision 0.794 and recall 0.697. Logistic regression ROC-AUC was 0.812; the majority baseline was 0.500.
 
 **Model inputs.** The saved Random Forest pipeline uses 18 numeric features plus category and region. Numeric inputs cover rank/momentum, persistence observed so far, audience growth and velocity, engagement, channel context and current cross-region reach.
 
@@ -2963,8 +2963,8 @@ elif chapter == "06 Â· Prediction":
         """)
 
 
-elif chapter == "07 Â· AI Brief":
-    st.markdown('<div class="gold-kicker">07 Â· AI BRIEF</div>', unsafe_allow_html=True)
+elif chapter == "07 · AI Brief":
+    st.markdown('<div class="gold-kicker">07 · AI BRIEF</div>', unsafe_allow_html=True)
     st.markdown('<div class="hero-title">What should we know about trending attention right now?</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtle">A grounded executive interpretation of evidence already calculated by the trend intelligence system.</div>', unsafe_allow_html=True)
 
@@ -2995,7 +2995,7 @@ elif chapter == "07 Â· AI Brief":
             st.error("Configure GOOGLE_API_KEY before generating the AI brief.")
         else:
             try:
-                with st.spinner("Building the grounded fact package and generating the briefâ€¦"):
+                with st.spinner("Building the grounded fact package and generating the brief…"):
                     from ai.gemini_interpreter import ask_grounded_gemini
                     facts = load_ai_fact_package()
                     lens_focus = {
@@ -3014,7 +3014,7 @@ LENS FOCUS:
 Use EXACTLY these three markdown sections and no others.
 
 ## Executive brief
-Write only 2â€“3 sentences. Give the overall analytical story. Synthesize instead of dumping metrics.
+Write only 2–3 sentences. Give the overall analytical story. Synthesize instead of dumping metrics.
 
 ## What changed
 Give at most 3 bullets. Each bullet must describe an observed movement, difference or contrast supported by the facts. Start each bullet with a short bold label. Use only the minimum supporting number needed.
@@ -3055,18 +3055,18 @@ READABILITY RULES:
         with left:
             st.markdown("### Grounded executive brief")
             generated_lens = st.session_state.get("ai_brief_lens", brief_type)
-            st.caption(f"Lens Â· {generated_lens} Â· generated only from the structured evidence package shown alongside it.")
+            st.caption(f"Lens · {generated_lens} · generated only from the structured evidence package shown alongside it.")
             st.markdown(brief)
 
         with right:
             st.markdown("### Fact package")
-            st.caption("The evidence supplied to Gemini â€” not facts generated by Gemini.")
+            st.caption("The evidence supplied to Gemini — not facts generated by Gemini.")
             metadata = facts.get("metadata", {})
             rising = facts.get("rising_videos", []) or []
             categories = facts.get("category_trends", []) or []
             regions = facts.get("regional_trends", []) or []
             cross_region = facts.get("global_vs_regional", []) or []
-            prediction_date = safe_text(metadata.get("prediction_date"), "â€”")
+            prediction_date = safe_text(metadata.get("prediction_date"), "—")
             region_names = metadata.get("regions", []) or []
             observations = metadata.get("historical_observations")
 
@@ -3079,16 +3079,16 @@ READABILITY RULES:
             probs = [pd.to_numeric(x.get("still_trending_tomorrow_probability"), errors="coerce") for x in rising]
             probs = [x for x in probs if pd.notna(x)]
             high_prob = max(probs) if probs else np.nan
-            lead_category = safe_text(categories[0].get("category_name"), "â€”") if categories else "â€”"
-            region_text = " Â· ".join(map(str, region_names)) if region_names else "â€”"
+            lead_category = safe_text(categories[0].get("category_name"), "—") if categories else "—"
+            region_text = " · ".join(map(str, region_names)) if region_names else "—"
 
             fact_cards = [
-                ("PULSE", f"{len(rising):,} current rising states supplied", f"Prediction date Â· {prediction_date}"),
-                ("MOMENTUM", f"+{strongest_move:.0f} positions" if pd.notna(strongest_move) else "â€”", "Strongest rank move in supplied current evidence"),
-                ("LIFECYCLE", f"{median_life:.1f} days" if pd.notna(median_life) else "â€”", "Median observed duration among supplied rising states"),
+                ("PULSE", f"{len(rising):,} current rising states supplied", f"Prediction date · {prediction_date}"),
+                ("MOMENTUM", f"+{strongest_move:.0f} positions" if pd.notna(strongest_move) else "—", "Strongest rank move in supplied current evidence"),
+                ("LIFECYCLE", f"{median_life:.1f} days" if pd.notna(median_life) else "—", "Median observed duration among supplied rising states"),
                 ("CONTENT", lead_category, "Leading category in the supplied category evidence"),
-                ("REGIONS", region_text, f"{len(regions):,} regional evidence rows Â· {len(cross_region):,} reach-comparison rows"),
-                ("PREDICTION", f"{high_prob:.0%}" if pd.notna(high_prob) else "â€”", "Highest persistence estimate among supplied rising states"),
+                ("REGIONS", region_text, f"{len(regions):,} regional evidence rows · {len(cross_region):,} reach-comparison rows"),
+                ("PREDICTION", f"{high_prob:.0%}" if pd.notna(high_prob) else "—", "Highest persistence estimate among supplied rising states"),
             ]
             for label, value, note in fact_cards:
                 st.markdown(
@@ -3126,7 +3126,7 @@ READABILITY RULES:
     st.markdown(
         f'''<div class="so-what"><div class="gold-kicker">SO WHAT</div>
         <div style="font-size:1.12rem;margin-top:.5rem;line-height:1.55">The AI layer turns the project's calculated evidence into a readable decision narrative without replacing the underlying analytics. The final question is whether the data and pipeline supporting that story are healthy enough to trust.</div>
-        <div style="color:{GOLD_SOFT};margin-top:.9rem;font-weight:600">Continue â†’ 08 Â· Data Health</div></div>''',
+        <div style="color:{GOLD_SOFT};margin-top:.9rem;font-weight:600">Continue → 08 · Data Health</div></div>''',
         unsafe_allow_html=True,
     )
 
@@ -3141,8 +3141,8 @@ READABILITY RULES:
 **Scope.** Geographic statements refer only to the four markets collected by this pipeline: CA, GB, IN and US.
         ''')
 
-elif chapter == "08 Â· Data Health":
-    st.markdown('<div class="gold-kicker">08 Â· DATA HEALTH</div>', unsafe_allow_html=True)
+elif chapter == "08 · Data Health":
+    st.markdown('<div class="gold-kicker">08 · DATA HEALTH</div>', unsafe_allow_html=True)
     st.markdown('<div class="hero-title">Can we trust the data behind the story?</div>', unsafe_allow_html=True)
     st.markdown(
         '<div class="subtle">Validate collection coverage, enrichment, pipeline runs and the lifecycle records behind the dashboard.</div>',
@@ -3227,9 +3227,9 @@ elif chapter == "08 Â· Data Health":
     latest_complete_text = (
         pd.to_datetime(latest_complete).strftime("%b %d")
         if pd.notna(latest_complete)
-        else "â€”"
+        else "—"
     )
-    enrichment_text = f"{enrichment_pct:.0f}%" if pd.notna(enrichment_pct) else "â€”"
+    enrichment_text = f"{enrichment_pct:.0f}%" if pd.notna(enrichment_pct) else "—"
 
     for col, (label, value) in zip(st.columns(4), [
         ("Latest complete view", latest_complete_text),
@@ -3318,10 +3318,10 @@ elif chapter == "08 Â· Data Health":
 
     st.markdown("### Recent pipeline checks")
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Audit success rate", f"{success_rate:.0f}%" if pd.notna(success_rate) else "â€”")
-    c2.metric("Freshness", f"{freshness_hours:.1f} h" if pd.notna(freshness_hours) else "â€”")
+    c1.metric("Audit success rate", f"{success_rate:.0f}%" if pd.notna(success_rate) else "—")
+    c2.metric("Freshness", f"{freshness_hours:.1f} h" if pd.notna(freshness_hours) else "—")
     c3.metric("Exact duplicates", f"{duplicate_count:,}")
-    c4.metric("Category coverage", f"{category_pct:.0f}%" if pd.notna(category_pct) else "â€”")
+    c4.metric("Category coverage", f"{category_pct:.0f}%" if pd.notna(category_pct) else "—")
 
     if audit_error:
         st.caption(f"Audit history could not be loaded: {audit_error}")
@@ -3345,9 +3345,9 @@ elif chapter == "08 Â· Data Health":
     else:
         st.info("No pipeline audit records were available.")
 
-    with st.expander("Explore the underlying data â€” lifecycle & entry-rank drill-down"):
+    with st.expander("Explore the underlying data — lifecycle & entry-rank drill-down"):
         st.caption(
-            "One row represents one video Ã— market lifecycle. Use this to inspect the exact entry-rank evidence behind 03 Lifecycle."
+            "One row represents one video × market lifecycle. Use this to inspect the exact entry-rank evidence behind 03 Lifecycle."
         )
 
         for col in [
@@ -3395,7 +3395,7 @@ elif chapter == "08 Â· Data Health":
         )
         band_filter = f3.selectbox(
             "Entry rank",
-            ["All entry ranks", "Top 10", "Rank 11â€“50", "Rank 51â€“100", "101+"],
+            ["All entry ranks", "Top 10", "Rank 11–50", "Rank 51–100", "101+"],
             key="health_explorer_rank_band",
         )
         title_query = f4.text_input(
@@ -3495,7 +3495,7 @@ elif chapter == "08 Â· Data Health":
 
 **Pipeline freshness.** The audit layer treats the pipeline as fresh when the latest successful run is no more than 9 hours old. Audit history also tracks success/failure, retries and fetched-versus-written record counts.
 
-**Lifecycle explorer.** One lifecycle is one video Ã— market. Entry rank is the first observed trending rank for that lifecycle. Observed lifetime counts distinct collected calendar days; it does not assume the video remained trending on unobserved days.
+**Lifecycle explorer.** One lifecycle is one video × market. Entry rank is the first observed trending rank for that lifecycle. Observed lifetime counts distinct collected calendar days; it does not assume the video remained trending on unobserved days.
         """)
 
     st.markdown(
@@ -3508,4 +3508,4 @@ elif chapter == "08 Â· Data Health":
 
 
 st.divider()
-st.caption("Portfolio project Â· YouTube Data API snapshots Â· CA, GB, IN and US Â· Not affiliated with YouTube")
+st.caption("Portfolio project · YouTube Data API snapshots · CA, GB, IN and US · Not affiliated with YouTube")
